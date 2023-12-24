@@ -8,6 +8,7 @@
 	import { onMount, type ComponentProps, type PropsWithChildren, onDestroy } from 'svelte';
 	import { getRandomFontFamily } from './lib';
 	import { GOOGLE_FONTS_API_PATH } from './config';
+	import { browser } from '$app/environment';
 
 	type Props = PropsWithChildren<
 		{
@@ -46,9 +47,11 @@
 	};
 
 	onMount(() => {
-		if (!fontsInitialized) {
-			const css = window.document.styleSheets[0];
-			css.insertRule(`@import url('${GOOGLE_FONTS_API_PATH}');`);
+		if (!fontsInitialized && browser) {
+			const style = document.createElement('style');
+			style.innerHTML = `@import url('${GOOGLE_FONTS_API_PATH}');`;
+			document.head.append(style);
+
 			fontsInitialized = true;
 		}
 		if (random) {

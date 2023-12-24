@@ -1,4 +1,5 @@
 <script lang="ts">
+	import '../../lib/shared/styles/global.scss';
 </script>
 
 <svelte:head>
@@ -6,7 +7,3 @@
 </svelte:head>
 
 <slot />
-
-<style lang="scss" global>
-	@use '../../lib/shared/styles/global.scss';
-</style>
