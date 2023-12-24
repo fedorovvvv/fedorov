@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { ComponentProps } from 'svelte';
 	import { RandomFont } from '../RandomFont';
+	import { tweened } from 'svelte/motion';
 
 	type Props = Omit<ComponentProps<RandomFont>, 'children'>;
 
@@ -9,11 +10,10 @@
 		// eslint-disable-next-line no-undef
 	} = $props<Props>();
 
-	// eslint-disable-next-line no-undef
-	let weight = $state({
-		current: 800,
-		max: 800,
-		min: 200
+	let maxWeight = 800;
+	let minWeight = 200;
+	let weight = tweened(maxWeight, {
+		duration: 200
 	});
 
 	const handler = {
@@ -25,14 +25,20 @@
 
 			const percentToCenter = 1 - (x + y);
 
-			weight.current = Math.floor(weight.min + (weight.max - weight.min) * percentToCenter);
+			weight.set(minWeight + (maxWeight - minWeight) * percentToCenter);
 		}
 	};
 </script>
 
 <svelte:window onmousemove={handler.windowMouseMove} />
 
-<RandomFont tag="h1" weight={weight.current} class="Logo" textTransform="uppercase" {content} />
+<RandomFont
+	tag="h1"
+	weight={Math.floor($weight)}
+	class="Logo"
+	textTransform="uppercase"
+	{content}
+/>
 
 <style lang="scss">
 	:global(.Logo) {
