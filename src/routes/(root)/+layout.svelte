@@ -1,5 +1,12 @@
 <script lang="ts">
-
 </script>
 
-<slot/>
+<svelte:head>
+	<title>Fedorov</title>
+</svelte:head>
+
+<slot />
+
+<style lang="scss" global>
+	@use '../../lib/shared/styles/global.scss';
+</style>

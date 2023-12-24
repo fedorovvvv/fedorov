@@ -1,0 +1,14 @@
+@use './fonts/index.scss';
+@import './fonts/monaspace.scss';
+
+* {
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
+}
+
+body {
+	font-family: monaspace-font-family(), monospace;
+	background-color: #fbfbfb;
+	color: #2c2c2c;
+}
