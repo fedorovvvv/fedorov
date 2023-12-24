@@ -10,9 +10,9 @@
 		// eslint-disable-next-line no-undef
 	} = $props<Props>();
 
-	let maxWeight = 800;
-	let minWeight = 200;
-	let weight = tweened(maxWeight, {
+	const maxWeight = 800;
+	const minWeight = 200;
+	const weight = tweened(maxWeight, {
 		duration: 200
 	});
 
