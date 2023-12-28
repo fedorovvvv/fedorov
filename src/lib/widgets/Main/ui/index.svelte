@@ -1,7 +1,8 @@
 <script lang="ts">
 </script>
 
-<div>
+<div class="wrapper">
+	<div class="spacer"></div>
 	<slot name="header" />
 	<main style="height: 200vh">
 		<slot />
@@ -9,14 +10,21 @@
 </div>
 
 <style lang="scss">
-	div {
+	.wrapper {
 		min-height: 100vh;
-		& > :global(header) {
-			margin-top: calc(50vh - var(--height) / 2);
-			margin-bottom: calc(50vh - var(--height) / 2);
-		}
+		display: grid;
+		grid-template-columns: 0px 1fr;
+		align-items: center;
+		grid-template-areas:
+			'spacer header'
+			'main main';
+	}
+
+	.spacer {
+		height: 100vh;
+		width: 0px;
 	}
 	main {
-		background: green;
+		grid-area: main;
 	}
 </style>

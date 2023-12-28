@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ComponentProps, PropsWithChildren } from 'svelte';
+	import { type ComponentProps, type PropsWithChildren } from 'svelte';
 	import { Font } from '../Font';
 	import Symbol from './Symbol.svelte';
 
@@ -15,21 +15,21 @@
 		{
 			class?: string;
 			content: Array<ContentSymbol>;
+			ref?: (ref?: HTMLElement) => void;
 		} & Omit<ComponentProps<Font>, 'children'>,
 		{
 			default: undefined;
 		}
 	>;
 
-	let {
-		content,
-		class: className = '',
-		...restProps
-		// eslint-disable-next-line no-undef
-	} = $props<Props>();
+	let { content, class: className = '', ref: propsRef, ...restProps } = $props<Props>();
+
+	let fontRef = $state<HTMLElement | undefined>();
+
+	$effect(() => propsRef?.(fontRef));
 </script>
 
-<Font {...restProps} class={`RandomFont ${className}`}>
+<Font ref={(ref) => (fontRef = ref)} {...restProps} class={`RandomFont ${className}`}>
 	{#each content as item}
 		{#if typeof item === 'string'}
 			{item}

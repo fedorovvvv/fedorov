@@ -2,18 +2,15 @@
 	import type { ComponentProps } from 'svelte';
 	import { RandomFont } from '../RandomFont';
 	import { tweened } from 'svelte/motion';
+	import throttle from 'lodash.throttle';
 
 	type Props = Omit<ComponentProps<RandomFont>, 'children'> & {
-		size?: 'medium';
+		size?: 'medium' | 'small';
 	};
 
-	let {
-		class: className,
-		content,
-		size,
-		...restProps
-		// eslint-disable-next-line no-undef
-	} = $props<Props>();
+	let { class: className, content, size, ...restProps } = $props<Props>();
+
+	let randomFontRef = $state<HTMLElement | undefined>();
 
 	const maxWeight = 800;
 	const minWeight = 200;
@@ -21,16 +18,27 @@
 		duration: 200
 	});
 
+	const updateWeight = throttle((event: MouseEvent) => {
+		const { clientX, clientY, view } = event;
+		if (!view || !randomFontRef) return;
+		const rect = randomFontRef.getBoundingClientRect();
+
+		const center = {
+			x: rect.x + rect.width / 2 - clientX,
+			y: rect.y + rect.height / 2 - clientY
+		};
+
+		const x = Math.abs(center.x / view?.innerWidth);
+		const y = Math.abs(center.y / view?.innerHeight);
+
+		const percentToCenter = 1 - (x + y);
+
+		weight.set(minWeight + (maxWeight - minWeight) * percentToCenter);
+	}, 100);
+
 	const handler = {
 		windowMouseMove(event: MouseEvent) {
-			const { clientX, clientY, view } = event;
-			if (!view) return;
-			const x = Math.abs((view?.innerWidth / 2 - clientX) / view?.innerWidth);
-			const y = Math.abs((view?.innerHeight / 2 - clientY) / view?.innerHeight);
-
-			const percentToCenter = 1 - (x + y);
-
-			weight.set(minWeight + (maxWeight - minWeight) * percentToCenter);
+			updateWeight(event);
 		}
 	};
 </script>
@@ -39,6 +47,7 @@
 
 <RandomFont
 	tag="h1"
+	ref={(ref) => (randomFontRef = ref)}
 	weight={Math.floor($weight)}
 	class={`Logo ${className}`}
 	textTransform="uppercase"
@@ -55,6 +64,10 @@
 		}
 	}
 	:global(.Logo[data-size='medium']) {
-		--font-size: 60px;
+		--font-size: 48px;
+	}
+
+	:global(.Logo[data-size='small']) {
+		--font-size: 32px;
 	}
 </style>

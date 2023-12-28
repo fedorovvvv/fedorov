@@ -36,6 +36,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@cluue/styles": "^1.0.18",
 		"lodash.debounce": "^4.0.8",
 		"lodash.throttle": "^4.1.1"
 	}

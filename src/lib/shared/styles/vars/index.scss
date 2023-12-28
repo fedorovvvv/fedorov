@@ -1,3 +1,10 @@
+@import '../../../../../node_modules/@cluue/styles/src/generators/color.scss';
+
 :root {
-	--transition: 0.3s ease;
+	--transition-duration: 0.3s;
+	--transition-timing-function: ease;
+	--transition: var(--transition-duration) var(--transition-timing-function);
+
+	//colors
+	@include color-generator('accent', #e35454);
 }

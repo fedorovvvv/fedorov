@@ -1,5 +1,4 @@
 <script lang="ts" context="module">
-	// eslint-disable-next-line no-undef
 	let fontsInitialized = $state(false);
 </script>
 
@@ -14,16 +13,16 @@
 		{
 			random?: boolean;
 			opacity?: boolean;
+			hidden?: boolean;
+			accent?: boolean;
 		},
 		{
 			default: undefined;
 		}
 	>;
 
-	// eslint-disable-next-line no-undef
-	let { random = true, opacity } = $props<Props>();
+	let { random = true, opacity, hidden, accent } = $props<Props>();
 
-	// eslint-disable-next-line no-undef
 	let fontFamily = $state<ComponentProps<Font>['family']>();
 
 	const randomizer: {
@@ -54,29 +53,57 @@
 
 			fontsInitialized = true;
 		}
-		if (random) {
-			randomizer.start();
-		}
 	});
 
 	onDestroy(() => {
 		randomizer.stop();
 	});
+
+	$effect(() => {
+		if (hidden) {
+			randomizer.stop();
+		} else if (random) {
+			randomizer.start();
+		} else if (!random) {
+			randomizer.stop();
+		}
+	});
 </script>
 
-<Font family={fontFamily} class="RandomFontSymbol" data-opacity={opacity ? '' : undefined}>
+<Font
+	family={fontFamily}
+	class="RandomFontSymbol"
+	data-hidden={hidden ? '' : undefined}
+	data-opacity={opacity ? '' : undefined}
+	data-accent={accent ? '' : undefined}
+>
 	<slot />
 </Font>
 
 <style lang="scss">
 	:global(.RandomFontSymbol) {
-		opacity: var(--opacity);
 		display: inline-block;
 		text-align: center;
 		line-height: 100%;
 		width: 1em;
+		transition:
+			transform calc(var(--transition-duration) * 2) var(--transition-timing-function),
+			width calc(var(--transition-duration) * 2) var(--transition-timing-function),
+			opacity calc(var(--transition-duration) * 2) var(--transition-timing-function),
+			line-height var(--transition-duration) var(--transition-timing-function),
+			font-size var(--transition-duration) var(--transition-timing-function);
 	}
 	:global(.RandomFontSymbol[data-opacity]) {
 		opacity: 0.1;
+	}
+	:global(.RandomFontSymbol[data-hidden]) {
+		width: 0;
+		opacity: 0;
+		transform: scaleX(0);
+		pointer-events: none;
+	}
+
+	:global(.RandomFontSymbol[data-accent]) {
+		color: var(--clue-color-accent);
 	}
 </style>

@@ -1,28 +1,31 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import { SiteEntity } from '$entities/Site';
-	import { onMount } from 'svelte';
 
-	// eslint-disable-next-line no-undef
 	let headerRef = $state<HTMLElement>();
-	let initialHeaderOffsetTop: number | undefined = undefined;
-	// eslint-disable-next-line no-undef
+	let initialHeaderHeight: number | undefined = undefined;
+
 	let height = $state(0);
-	// eslint-disable-next-line no-undef
+
 	let sticked = $state(false);
 
-	const handler = {
-		scroll() {
-			if (typeof initialHeaderOffsetTop === 'undefined') return;
-			sticked = window.scrollY >= initialHeaderOffsetTop;
+	const updateSticked = () => {
+		if (browser) {
+			if (typeof initialHeaderHeight === 'undefined') return;
+			sticked = window.scrollY >= (window.innerHeight - initialHeaderHeight) / 2;
 		}
 	};
 
-	onMount(() => {
-		if (headerRef) {
-			console.log(headerRef.offsetTop, window.scrollY);
-			initialHeaderOffsetTop = headerRef.offsetTop - window.scrollY;
-			console.log(initialHeaderOffsetTop);
+	const handler = {
+		scroll() {
+			updateSticked();
 		}
+	};
+
+	$effect(() => {
+		if (!headerRef) return;
+		initialHeaderHeight = headerRef.clientHeight;
+		updateSticked();
 	});
 </script>
 
@@ -34,7 +37,7 @@
 	style:--height={`${height}px`}
 	class:sticked
 >
-	<SiteEntity.Logo size={sticked ? 'medium' : undefined} />
+	<SiteEntity.Logo cropped={sticked} size={sticked ? 'small' : undefined} />
 </header>
 
 <style lang="scss">
@@ -46,10 +49,11 @@
 		position: sticky;
 		top: 0;
 		left: 0;
+		transition: var(--transition);
+		transition-property: padding, background;
 		&.sticked {
-			// position: sticky;
-			// top: 0;
-			// left: 0;
+			padding: 12px 20px;
+			// align-self: start;
 		}
 	}
 </style>
