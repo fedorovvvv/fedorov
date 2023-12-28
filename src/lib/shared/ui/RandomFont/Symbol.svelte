@@ -73,6 +73,7 @@
 <Font
 	family={fontFamily}
 	class="RandomFontSymbol"
+	data-random={random ? '' : undefined}
 	data-hidden={hidden ? '' : undefined}
 	data-opacity={opacity ? '' : undefined}
 	data-accent={accent ? '' : undefined}
@@ -85,13 +86,16 @@
 		display: inline-block;
 		text-align: center;
 		line-height: 100%;
-		width: 1em;
+		width: 0.8em;
 		transition:
 			transform calc(var(--transition-duration) * 2) var(--transition-timing-function),
 			width calc(var(--transition-duration) * 2) var(--transition-timing-function),
 			opacity calc(var(--transition-duration) * 2) var(--transition-timing-function),
 			line-height var(--transition-duration) var(--transition-timing-function),
 			font-size var(--transition-duration) var(--transition-timing-function);
+	}
+	:global(.RandomFontSymbol[data-random]) {
+		width: 1em;
 	}
 	:global(.RandomFontSymbol[data-opacity]) {
 		opacity: 0.1;
