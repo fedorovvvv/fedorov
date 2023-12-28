@@ -1,18 +1,3 @@
 <script lang="ts">
-	import { MainLogo } from '$lib/widgets/MainLogo';
+	console.log('HELLOOOOO');
 </script>
-
-<main>
-	<section>
-		<MainLogo />
-	</section>
-</main>
-
-<style lang="scss">
-	section {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		height: 100vh;
-	}
-</style>

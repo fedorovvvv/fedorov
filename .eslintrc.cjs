@@ -27,5 +27,11 @@ module.exports = {
 				parser: '@typescript-eslint/parser'
 			}
 		}
-	]
+	],
+	globals: {
+		$state: 'readonly',
+		$props: 'readonly',
+		$effect: 'readonly',
+		$derived: 'readonly'
+	}
 };

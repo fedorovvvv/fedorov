@@ -1,5 +1,5 @@
 <script lang="ts">
-	interface IProps extends Partial<Record<`data-${string}`, string>> {
+	interface IProps extends Partial<Record<`data-${string}`, unknown>> {
 		class?: string;
 		family?: string;
 		tag?: string;
@@ -10,6 +10,7 @@
 		textTransform?: string;
 		transitionProperty?: string[];
 		children: unknown;
+		ref?: (ref?: HTMLElement) => void;
 	}
 
 	let {
@@ -24,13 +25,18 @@
 		textTransform,
 		transitionProperty,
 		class: className = '',
+		ref: propsRef,
 		...restProps
-		// eslint-disable-next-line no-undef
 	} = $props<IProps>();
+
+	let ref = $state<HTMLElement>();
+
+	$effect(() => propsRef?.(ref));
 </script>
 
 <svelte:element
 	this={tag}
+	bind:this={ref}
 	style:--font-family={family ? `"${family}"` : undefined}
 	style:--font-size={size}
 	style:--font-weight={weight}
