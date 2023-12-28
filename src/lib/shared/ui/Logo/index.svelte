@@ -3,10 +3,15 @@
 	import { RandomFont } from '../RandomFont';
 	import { tweened } from 'svelte/motion';
 
-	type Props = Omit<ComponentProps<RandomFont>, 'children'>;
+	type Props = Omit<ComponentProps<RandomFont>, 'children'> & {
+		size?: 'medium';
+	};
 
 	let {
-		content
+		class: className,
+		content,
+		size,
+		...restProps
 		// eslint-disable-next-line no-undef
 	} = $props<Props>();
 
@@ -35,9 +40,11 @@
 <RandomFont
 	tag="h1"
 	weight={Math.floor($weight)}
-	class="Logo"
+	class={`Logo ${className}`}
 	textTransform="uppercase"
+	data-size={size}
 	{content}
+	{...restProps}
 />
 
 <style lang="scss">
@@ -46,5 +53,8 @@
 		@media (max-width: 724px) {
 			--font-size: 40px;
 		}
+	}
+	:global(.Logo[data-size='medium']) {
+		--font-size: 60px;
 	}
 </style>
