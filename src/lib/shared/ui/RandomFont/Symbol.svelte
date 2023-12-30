@@ -15,15 +15,18 @@
 			opacity?: boolean;
 			hidden?: boolean;
 			accent?: boolean;
+			pseudoSymbol?: string;
 		},
 		{
 			default: undefined;
 		}
 	>;
 
-	let { random = true, opacity, hidden, accent } = $props<Props>();
+	let { random = true, opacity, hidden, accent, pseudoSymbol = 'm' } = $props<Props>();
 
 	let fontFamily = $state<ComponentProps<Font>['family']>();
+	let clientWidth = $state(0);
+	let ref = $state<HTMLElement>();
 
 	const randomizer: {
 		intervalInstance?: ReturnType<typeof setInterval>;
@@ -73,37 +76,67 @@
 <Font
 	family={fontFamily}
 	class="RandomFontSymbol"
-	data-random={random ? '' : undefined}
 	data-hidden={hidden ? '' : undefined}
 	data-opacity={opacity ? '' : undefined}
 	data-accent={accent ? '' : undefined}
+	data-pseudo={pseudoSymbol}
+	style={{
+		'--width': clientWidth ? `${clientWidth}px` : undefined
+	}}
+	bind:ref
 >
-	<slot />
+	<span class="pseudo" bind:clientWidth>{pseudoSymbol}</span>
+	<span class="symbol">
+		<slot />
+	</span>
 </Font>
 
 <style lang="scss">
 	:global(.RandomFontSymbol) {
 		display: inline-block;
+		font-family: inherit;
 		text-align: center;
-		line-height: 100%;
-		width: 0.8em;
+		position: relative;
+		width: var(--width);
+		margin-top: -0.2em;
 		transition:
 			transform calc(var(--transition-duration) * 2) var(--transition-timing-function),
 			width calc(var(--transition-duration) * 2) var(--transition-timing-function),
 			opacity calc(var(--transition-duration) * 2) var(--transition-timing-function),
-			line-height var(--transition-duration) var(--transition-timing-function),
 			font-size var(--transition-duration) var(--transition-timing-function);
+		&::before,
+		.pseudo {
+			content: attr(data-pseudo);
+			display: inline-block;
+			visibility: hidden;
+			pointer-events: none;
+		}
 	}
-	:global(.RandomFontSymbol[data-random]) {
-		width: 1em;
+
+	.symbol,
+	.pseudo {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
 	}
+
+	.pseudo {
+		font-size: var(--font-size);
+		transition: none;
+	}
+
+	.symbol {
+		font-family: var(--font-family);
+		font-size: 0.9em;
+	}
+
 	:global(.RandomFontSymbol[data-opacity]) {
 		opacity: 0.1;
 	}
 	:global(.RandomFontSymbol[data-hidden]) {
-		width: 0;
+		width: 0px;
 		opacity: 0;
-		transform: scaleX(0);
 		pointer-events: none;
 	}
 

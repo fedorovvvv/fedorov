@@ -47,7 +47,7 @@
 
 <RandomFont
 	tag="h1"
-	ref={(ref) => (randomFontRef = ref)}
+	refSet={(ref) => (randomFontRef = ref)}
 	weight={Math.floor($weight)}
 	class={`Logo ${className}`}
 	textTransform="uppercase"

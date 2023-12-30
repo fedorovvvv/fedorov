@@ -1,4 +1,6 @@
 <script lang="ts">
+	import cssToStyle, { type CSSProperties } from '$shared/utils/cssToStyle';
+
 	interface IProps extends Partial<Record<`data-${string}`, unknown>> {
 		class?: string;
 		family?: string;
@@ -10,7 +12,10 @@
 		textTransform?: string;
 		transitionProperty?: string[];
 		children: unknown;
-		ref?: (ref?: HTMLElement) => void;
+		ref?: HTMLElement;
+		refSet?: (ref: HTMLElement) => void;
+		style?: CSSProperties;
+		clientWidth?: number;
 	}
 
 	let {
@@ -25,18 +30,20 @@
 		textTransform,
 		transitionProperty,
 		class: className = '',
-		ref: propsRef,
+		ref,
+		refSet,
+		style,
+		clientWidth,
 		...restProps
 	} = $props<IProps>();
 
-	let ref = $state<HTMLElement>();
-
-	$effect(() => propsRef?.(ref));
+	$effect(() => ref && refSet?.(ref));
 </script>
 
 <svelte:element
 	this={tag}
 	bind:this={ref}
+	bind:clientWidth
 	style:--font-family={family ? `"${family}"` : undefined}
 	style:--font-size={size}
 	style:--font-weight={weight}
@@ -45,6 +52,7 @@
 	style:--text-transform={textTransform}
 	style:--transition-property={transitionProperty?.join(',')}
 	class={`${className} Font`}
+	style={cssToStyle?.(style)}
 	{...restProps}
 >
 	<slot />

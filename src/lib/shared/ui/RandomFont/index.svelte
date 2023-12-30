@@ -22,14 +22,14 @@
 		}
 	>;
 
-	let { content, class: className = '', ref: propsRef, ...restProps } = $props<Props>();
+	let { content, class: className = '', refSet, ...restProps } = $props<Props>();
 
 	let fontRef = $state<HTMLElement | undefined>();
 
-	$effect(() => propsRef?.(fontRef));
+	$effect(() => fontRef && refSet?.(fontRef));
 </script>
 
-<Font ref={(ref) => (fontRef = ref)} {...restProps} class={`RandomFont ${className}`}>
+<Font refSet={(ref) => (fontRef = ref)} {...restProps} class={`RandomFont ${className}`}>
 	{#each content as item}
 		{#if typeof item === 'string'}
 			{item}
